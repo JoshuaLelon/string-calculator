@@ -9,7 +9,8 @@
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
-        "eslint-config-prettier"
+        "eslint-config-prettier",
+        "plugin:jest/recommended"
     ],
     "rules": {
         "strict": ["error", "never"]
