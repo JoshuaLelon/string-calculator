@@ -14,6 +14,8 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "jest",
+        "test:watch": "jest --watch",
+        "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand --watch",
         "eject": "react-scripts eject",
         "lint": "eslint --ignore-path .gitignore .",
         "prettier": "prettier --ignore-path .gitignore \"**/*.+(js|json)\"",
@@ -39,6 +41,7 @@
     "devDependencies": {
         "@emotion/babel-preset-css-prop": "^10.0.23",
         "@emotion/core": "^10.0.22",
+        "babel-eslint": "^10.0.3",
         "eslint": "^6.7.2",
         "eslint-config-prettier": "^6.7.0",
         "eslint-plugin-jest": "^23.1.1",
