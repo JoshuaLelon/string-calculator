@@ -42,13 +42,21 @@ test('add 1 number returns same number', () => {
     expect(outputElement.innerHTML).toBe('20');
 });
 
+//////////////
+// Below is a test that verifies that an exception is thrown when the number is negative
+// The test fails for some reason (even though calling that function causes
+// an exception with that exact error message)
+// In other words, the functionality works, the test doesn't.
+// I'm not sure how to fix it yet, so I'm going to prioritize working on other req's
+/////////////
+
 test('adds 2 numbers, one negative', () => {
     const { getByRole } = render(<Calculator />);
     const inputElement = getByRole('textbox');
     fireEvent.change(inputElement, { target: { value: '4,-3' } });
-    fireEvent.click(getByRole('button'));
-    const outputElement = getByRole('heading');
-    expect(outputElement.innerHTML).toBe('1');
+    expect(() => fireEvent.click(getByRole('button'))).toThrowError(
+        'Negatives are not allowed in the calculation! negatives: -3',
+    );
 });
 
 ////////////////// empty input or missing numbers should be converted to 0

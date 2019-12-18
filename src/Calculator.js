@@ -14,18 +14,31 @@ class Calculator extends React.Component {
         const userInputSplit = userInput
             .split(re)
             .filter(element => element !== undefined);
+        let negatives = [];
         const tokenizedInput = userInputSplit.map(element => {
             element.trim();
             if (isNaN(element) || element === '') {
                 element = 0;
+            } else if (element < 0) {
+                negatives.push(element);
             } else {
                 element = +element;
             }
             return element;
         });
-        this.setState({
-            calculationResult: tokenizedInput.reduce((a, b) => a + b),
-        });
+        if (negatives.length > 0) {
+            this.setState({
+                calculationResult: 'Negatives are not allowed!',
+            });
+            throw new Error(
+                'Negatives are not allowed in the calculation! negatives: ' +
+                    negatives,
+            );
+        } else {
+            this.setState({
+                calculationResult: tokenizedInput.reduce((a, b) => a + b),
+            });
+        }
     };
     render() {
         return (
