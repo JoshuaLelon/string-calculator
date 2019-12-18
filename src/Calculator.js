@@ -17,7 +17,7 @@ class Calculator extends React.Component {
         let negatives = [];
         const tokenizedInput = userInputSplit.map(element => {
             element.trim();
-            if (isNaN(element) || element === '') {
+            if (isNaN(element) || element === '' || element > 1000) {
                 element = 0;
             } else if (element < 0) {
                 negatives.push(element);

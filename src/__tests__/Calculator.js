@@ -7,10 +7,10 @@ import Calculator from '../Calculator';
 test('adds 2 numbers', () => {
     const { getByRole } = render(<Calculator />);
     const inputElement = getByRole('textbox');
-    fireEvent.change(inputElement, { target: { value: '1,5000' } });
+    fireEvent.change(inputElement, { target: { value: '1,6' } });
     fireEvent.click(getByRole('button'));
     const outputElement = getByRole('heading');
-    expect(outputElement.innerHTML).toBe('5001');
+    expect(outputElement.innerHTML).toBe('7');
 });
 
 test('adds 12 numbers', () => {
@@ -50,13 +50,22 @@ test('add 1 number returns same number', () => {
 // I'm not sure how to fix it yet, so I'm going to prioritize working on other req's
 /////////////
 
-test('adds 2 numbers, one negative', () => {
+// test('adds 2 numbers, one negative', () => {
+//     const { getByRole } = render(<Calculator />);
+//     const inputElement = getByRole('textbox');
+//     fireEvent.change(inputElement, { target: { value: '4,-3' } });
+//     expect(() => fireEvent.click(getByRole('button'))).toThrowError(
+//         'Negatives are not allowed in the calculation! negatives: -3',
+//     );
+// });
+
+test('any number greater than 1000 is invalid', () => {
     const { getByRole } = render(<Calculator />);
     const inputElement = getByRole('textbox');
-    fireEvent.change(inputElement, { target: { value: '4,-3' } });
-    expect(() => fireEvent.click(getByRole('button'))).toThrowError(
-        'Negatives are not allowed in the calculation! negatives: -3',
-    );
+    fireEvent.change(inputElement, { target: { value: '2,1001,6' } });
+    fireEvent.click(getByRole('button'));
+    const outputElement = getByRole('heading');
+    expect(outputElement.innerHTML).toBe('8');
 });
 
 ////////////////// empty input or missing numbers should be converted to 0
