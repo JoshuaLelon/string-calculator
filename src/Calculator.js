@@ -8,6 +8,21 @@ class Calculator extends React.Component {
             calculationResult: '',
         };
     }
+
+    hasNoNegatives = function(numbersArray) {
+        let negatives = numbersArray.filter(element => element < 0);
+        if (negatives.length > 0) {
+            this.setState({
+                calculationResult: 'Negatives are not allowed!',
+            });
+            throw new Error(
+                'Negatives are not allowed in the calculation! negatives: ' +
+                    negatives,
+            );
+        }
+        return negatives.length === 0;
+    };
+
     onCalculateButtonClick = function() {
         const userInput = this.state.inputValue;
         let userInputSplit = null;
@@ -53,27 +68,16 @@ class Calculator extends React.Component {
                 .split(re)
                 .filter(element => element !== undefined);
         }
-        let negatives = [];
         const tokenizedInput = userInputSplit.map(element => {
             element.trim();
             if (isNaN(element) || element === '' || element > 1000) {
                 element = 0;
-            } else if (element < 0) {
-                negatives.push(element);
             } else {
                 element = +element;
             }
             return element;
         });
-        if (negatives.length > 0) {
-            this.setState({
-                calculationResult: 'Negatives are not allowed!',
-            });
-            throw new Error(
-                'Negatives are not allowed in the calculation! negatives: ' +
-                    negatives,
-            );
-        } else {
+        if (this.hasNoNegatives(tokenizedInput)) {
             this.setState({
                 calculationResult: tokenizedInput.reduce((a, b) => a + b),
             });
