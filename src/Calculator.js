@@ -19,15 +19,9 @@ class Calculator extends React.Component {
             }
             return element;
         });
-        if (tokenizedInput.length > 2) {
-            this.setState({
-                calculationResult: 'Only enter 2 numbers or less.',
-            });
-        } else {
-            this.setState({
-                calculationResult: tokenizedInput.reduce((a, b) => a + b),
-            });
-        }
+        this.setState({
+            calculationResult: tokenizedInput.reduce((a, b) => a + b),
+        });
     };
     render() {
         return (
