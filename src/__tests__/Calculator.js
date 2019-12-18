@@ -162,16 +162,16 @@ test('support 1 custom delimiter, single character, comma', () => {
 
 /// 7:
 
-// test('support 1 custom delimiter, any length, ***', () => {
-//     const { getByRole } = render(<Calculator />);
-//     const inputElement = getByRole('textbox');
-//     fireEvent.change(inputElement, {
-//         target: { value: '//[***]\n11***22***33' },
-//     });
-//     fireEvent.click(getByRole('button'));
-//     const outputElement = getByRole('heading');
-//     expect(outputElement.innerHTML).toBe('66');
-// });
+test('support 1 custom delimiter, any length, ***', () => {
+    const { getByRole } = render(<Calculator />);
+    const inputElement = getByRole('textbox');
+    fireEvent.change(inputElement, {
+        target: { value: '//[***]\n11***22***33' },
+    });
+    fireEvent.click(getByRole('button'));
+    const outputElement = getByRole('heading');
+    expect(outputElement.innerHTML).toBe('66');
+});
 
 /// 8:
 

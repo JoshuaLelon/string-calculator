@@ -12,8 +12,38 @@ class Calculator extends React.Component {
         const userInput = this.state.inputValue;
         let userInputSplit = null;
         if (userInput.startsWith('//')) {
-            const delimiter = userInput[2];
-            const userInputSliced = userInput.slice(3, userInput.length);
+            const re = /\[(.*?)\]/g;
+            const matches = userInput.match(re);
+            let beginDelimiterIndex = null;
+            let endDelimiterIndex = null;
+            let delimiter = null;
+            let userInputSliced = null;
+            let beginNumbersIndex = null;
+            if (!matches) {
+                // case 6
+                beginDelimiterIndex = 2;
+                endDelimiterIndex = 3;
+                delimiter = userInput.slice(
+                    beginDelimiterIndex,
+                    endDelimiterIndex,
+                );
+                beginNumbersIndex = endDelimiterIndex;
+            } else if (matches.length === 1) {
+                // case 7
+                beginDelimiterIndex = 3;
+                endDelimiterIndex = userInput.indexOf(']'); // assumes delimiter will never be ], yikes!
+                delimiter = userInput.slice(
+                    beginDelimiterIndex,
+                    endDelimiterIndex,
+                );
+                beginNumbersIndex = endDelimiterIndex + 1;
+            } else {
+                // case 8
+            }
+            userInputSliced = userInput.slice(
+                beginNumbersIndex,
+                userInput.length,
+            );
             userInputSplit = userInputSliced
                 .split(delimiter)
                 .filter(element => element !== undefined);
