@@ -35,12 +35,11 @@ class Calculator extends React.Component {
         });
     };
 
-    onCalculateButtonClick = function() {
-        const userInput = this.state.inputValue;
+    getNumberAsStrings = function(userInputString) {
         let userInputSplit = null;
-        if (userInput.startsWith('//')) {
+        if (userInputString.startsWith('//')) {
             const re = /\[(.*?)\]/g;
-            const matches = userInput.match(re);
+            const matches = userInputString.match(re);
             let beginDelimiterIndex = null;
             let endDelimiterIndex = null;
             let delimiter = null;
@@ -50,7 +49,7 @@ class Calculator extends React.Component {
                 // case 6
                 beginDelimiterIndex = 2;
                 endDelimiterIndex = 3;
-                delimiter = userInput.slice(
+                delimiter = userInputString.slice(
                     beginDelimiterIndex,
                     endDelimiterIndex,
                 );
@@ -58,8 +57,8 @@ class Calculator extends React.Component {
             } else if (matches.length === 1) {
                 // case 7
                 beginDelimiterIndex = 3;
-                endDelimiterIndex = userInput.indexOf(']'); // assumes delimiter will never be ], yikes!
-                delimiter = userInput.slice(
+                endDelimiterIndex = userInputString.indexOf(']'); // assumes delimiter will never be ], yikes!
+                delimiter = userInputString.slice(
                     beginDelimiterIndex,
                     endDelimiterIndex,
                 );
@@ -67,19 +66,25 @@ class Calculator extends React.Component {
             } else {
                 // case 8
             }
-            userInputSliced = userInput.slice(
+            userInputSliced = userInputString.slice(
                 beginNumbersIndex,
-                userInput.length,
+                userInputString.length,
             );
             userInputSplit = userInputSliced
                 .split(delimiter)
                 .filter(element => element !== undefined);
         } else {
             const re = /(\\n)|(,)/g;
-            userInputSplit = userInput
+            userInputSplit = userInputString
                 .split(re)
                 .filter(element => element !== undefined);
         }
+        return userInputSplit;
+    };
+
+    onCalculateButtonClick = function() {
+        const userInput = this.state.inputValue;
+        const userInputSplit = this.getNumberAsStrings(userInput);
         const numbersList = this.convertStringArrToNumbersArr(userInputSplit);
         if (this.hasNoNegatives(numbersList)) {
             this.setState({
