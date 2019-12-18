@@ -24,6 +24,15 @@ test('adds 12 numbers', () => {
     expect(outputElement.innerHTML).toBe('78');
 });
 
+test('adds 2 numbers, mixed delimiters', () => {
+    const { getByRole } = render(<Calculator />);
+    const inputElement = getByRole('textbox');
+    fireEvent.change(inputElement, { target: { value: '1\\n2,3' } });
+    fireEvent.click(getByRole('button'));
+    const outputElement = getByRole('heading');
+    expect(outputElement.innerHTML).toBe('6');
+});
+
 test('add 1 number returns same number', () => {
     const { getByRole } = render(<Calculator />);
     const inputElement = getByRole('textbox');

@@ -10,7 +10,11 @@ class Calculator extends React.Component {
     }
     onCalculateButtonClick = function() {
         const userInput = this.state.inputValue;
-        const tokenizedInput = userInput.split(',').map(element => {
+        const re = /(\\n)|(,)/g;
+        const userInputSplit = userInput
+            .split(re)
+            .filter(element => element !== undefined);
+        const tokenizedInput = userInputSplit.map(element => {
             element.trim();
             if (isNaN(element) || element === '') {
                 element = 0;
