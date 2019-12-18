@@ -8,72 +8,9 @@ class Calculator extends React.Component {
             calculationResult: '',
         };
     }
-    onCalculateButtonClick = function() {
-        const userInput = this.state.inputValue;
-        let userInputSplit = null;
-        if (userInput.startsWith('//')) {
-            // const re = /\[(.*?)\]/g;
-            const re = /[^[\]]+(?=])/g;
-            const matches = userInput.match(re);
-            debugger;
-            let beginDelimiterIndex = null;
-            let endDelimiterIndex = null;
-            let delimiter = null;
-            let userInputSliced = null;
-            let beginNumbersIndex = null;
-            if (!matches) {
-                // case 6
-                beginDelimiterIndex = 2;
-                endDelimiterIndex = 3;
-                delimiter = userInput.slice(
-                    beginDelimiterIndex,
-                    endDelimiterIndex,
-                );
-                beginNumbersIndex = endDelimiterIndex;
-            } else if (matches.length === 1) {
-                // case 7
-                beginDelimiterIndex = 3;
-                endDelimiterIndex = userInput.indexOf(']'); // assumes delimiter will never be ], yikes!
-                delimiter = userInput.slice(
-                    beginDelimiterIndex,
-                    endDelimiterIndex,
-                );
-                beginNumbersIndex = endDelimiterIndex + 1;
-            } else {
-                // case 8
-                debugger;
-                beginNumbersIndex = userInput.lastIndexOf(']') + 1;
-                // delimiter = /[^[\]]+(?=])/g;
-                delimiter = new RegExp(
-                    matches.map(e => '(' + e + ')').join('|') + '+',
-                    'g',
-                );
-            }
-            userInputSliced = userInput.slice(
-                beginNumbersIndex,
-                userInput.length,
-            );
-            userInputSplit = userInputSliced
-                .split(delimiter)
-                .filter(element => element !== undefined);
-        } else {
-            const re = /(\\n)|(,)/g;
-            userInputSplit = userInput
-                .split(re)
-                .filter(element => element !== undefined);
-        }
-        let negatives = [];
-        const tokenizedInput = userInputSplit.map(element => {
-            element.trim();
-            if (isNaN(element) || element === '' || element > 1000) {
-                element = 0;
-            } else if (element < 0) {
-                negatives.push(element);
-            } else {
-                element = +element;
-            }
-            return element;
-        });
+
+    hasNoNegatives = function(numbersArray) {
+        let negatives = numbersArray.filter(element => element < 0);
         if (negatives.length > 0) {
             this.setState({
                 calculationResult: 'Negatives are not allowed!',
@@ -82,9 +19,85 @@ class Calculator extends React.Component {
                 'Negatives are not allowed in the calculation! negatives: ' +
                     negatives,
             );
+        }
+        return negatives.length === 0;
+    };
+
+    convertStringArrToNumbersArr = function(numbersArr) {
+        return numbersArr.map(element => {
+            element.trim();
+            if (isNaN(element) || element === '' || element > 1000) {
+                element = 0;
+            } else {
+                element = +element;
+            }
+            return element;
+        });
+    };
+
+    getStringWithoutDelimiters = function(userInputString, matches) {
+        let beginNumbersIndex = null;
+        if (!matches) {
+            // requirement 6
+            beginNumbersIndex = 3;
+        } else if (matches.length === 1) {
+            // requirement 7
+            beginNumbersIndex = userInputString.indexOf(']') + 1; // assumes delimiter will never be ], yikes!
         } else {
+            // requirement 8
+            beginNumbersIndex = userInputString.lastIndexOf(']') + 1;
+        }
+        return userInputString.slice(beginNumbersIndex, userInputString.length);
+    };
+
+    getProperDelimiter = function(userInputString, matches) {
+        let delimiter = null;
+        if (!matches) {
+            // requirement 6
+            delimiter = userInputString.slice(2, 3); // the single char delimiter is at index 2
+        } else if (matches.length === 1) {
+            // requirement 7
+            delimiter = userInputString.slice(3, userInputString.indexOf(']')); // assumes delimiter will never be ], yikes!
+        } else {
+            // requirement 8
+            // what we want to do here is find a regex that finds all instances
+            // of everything in the matches list: ['r9r', '*', '!!']
+            // (might require extra difficulty since * is a special character in regex)
+            // then, the test case for requirement 8 will work.
+            // delimiter = /[^[\]]+(?=])/g;
+            delimiter = new RegExp(
+                matches.map(e => '(' + e + ')').join('|') + '+',
+                'g',
+            );
+        }
+        return delimiter;
+    };
+
+    getNumberAsStrings = function(userInputString) {
+        let delimiter = /(\\n)|(,)/g;
+        const re = /\[(.*?)\]/g; // this regex finds all delimiters in brackets []
+        const matches = userInputString.match(re);
+        let stringToSplit = userInputString;
+        if (userInputString.startsWith('//')) {
+            // this if block supports custom delimiter formats
+            stringToSplit = this.getStringWithoutDelimiters(
+                userInputString,
+                matches,
+            );
+            delimiter = this.getProperDelimiter(userInputString, matches);
+        }
+        return stringToSplit
+            .split(delimiter)
+            .filter(element => element !== undefined);
+    };
+
+    onCalculateButtonClick = function() {
+        const userInput = this.state.inputValue;
+        const userInputSplit = this.getNumberAsStrings(userInput);
+        const numbersList = this.convertStringArrToNumbersArr(userInputSplit);
+        if (this.hasNoNegatives(numbersList)) {
             this.setState({
-                calculationResult: tokenizedInput.reduce((a, b) => a + b),
+                calculationResult: numbersList.reduce((a, b) => a + b),
             });
         }
     };
