@@ -36,18 +36,16 @@ class Calculator extends React.Component {
     };
 
     getStringWithoutDelimiters = function(userInputString, matches) {
-        let endDelimiterIndex = null;
         let beginNumbersIndex = null;
         if (!matches) {
             // requirement 6
-            endDelimiterIndex = 3;
-            beginNumbersIndex = endDelimiterIndex;
+            beginNumbersIndex = 3;
         } else if (matches.length === 1) {
             // requirement 7
-            endDelimiterIndex = userInputString.indexOf(']'); // assumes delimiter will never be ], yikes!
-            beginNumbersIndex = endDelimiterIndex + 1;
+            beginNumbersIndex = userInputString.indexOf(']') + 1; // assumes delimiter will never be ], yikes!
         } else {
             // requirement 8
+            beginNumbersIndex = userInputString.lastIndexOf(']') + 1;
         }
         return userInputString.slice(beginNumbersIndex, userInputString.length);
     };
@@ -69,6 +67,7 @@ class Calculator extends React.Component {
         }
         return delimiter;
     };
+
     getNumberAsStrings = function(userInputString) {
         let delimiter = /(\\n)|(,)/g;
         const re = /\[(.*?)\]/g; // this regex finds all delimiters in brackets []
