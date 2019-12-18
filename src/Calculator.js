@@ -62,6 +62,7 @@ class Calculator extends React.Component {
             // requirement 8
             // what we want to do here is find a regex that finds all instances
             // of everything in the matches list: ['r9r', '*', '!!']
+            // (might require extra difficulty since * is a special character in regex)
             // then, the test case for requirement 8 will work.
             delimiter = null;
         }
