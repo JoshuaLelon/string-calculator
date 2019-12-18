@@ -23,6 +23,18 @@ class Calculator extends React.Component {
         return negatives.length === 0;
     };
 
+    convertStringArrToNumbersArr = function(numbersArr) {
+        return numbersArr.map(element => {
+            element.trim();
+            if (isNaN(element) || element === '' || element > 1000) {
+                element = 0;
+            } else {
+                element = +element;
+            }
+            return element;
+        });
+    };
+
     onCalculateButtonClick = function() {
         const userInput = this.state.inputValue;
         let userInputSplit = null;
@@ -68,18 +80,10 @@ class Calculator extends React.Component {
                 .split(re)
                 .filter(element => element !== undefined);
         }
-        const tokenizedInput = userInputSplit.map(element => {
-            element.trim();
-            if (isNaN(element) || element === '' || element > 1000) {
-                element = 0;
-            } else {
-                element = +element;
-            }
-            return element;
-        });
-        if (this.hasNoNegatives(tokenizedInput)) {
+        const numbersList = this.convertStringArrToNumbersArr(userInputSplit);
+        if (this.hasNoNegatives(numbersList)) {
             this.setState({
-                calculationResult: tokenizedInput.reduce((a, b) => a + b),
+                calculationResult: numbersList.reduce((a, b) => a + b),
             });
         }
     };
