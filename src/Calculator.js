@@ -10,10 +10,19 @@ class Calculator extends React.Component {
     }
     onCalculateButtonClick = function() {
         const userInput = this.state.inputValue;
-        const re = /(\\n)|(,)/g;
-        const userInputSplit = userInput
-            .split(re)
-            .filter(element => element !== undefined);
+        let userInputSplit = null;
+        if (userInput.startsWith('//')) {
+            const delimiter = userInput[2];
+            const userInputSliced = userInput.slice(3, userInput.length);
+            userInputSplit = userInputSliced
+                .split(delimiter)
+                .filter(element => element !== undefined);
+        } else {
+            const re = /(\\n)|(,)/g;
+            userInputSplit = userInput
+                .split(re)
+                .filter(element => element !== undefined);
+        }
         let negatives = [];
         const tokenizedInput = userInputSplit.map(element => {
             element.trim();

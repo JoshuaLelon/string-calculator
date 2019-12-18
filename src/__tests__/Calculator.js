@@ -135,3 +135,53 @@ test('one invalid returns other number, invalid on right', () => {
     const outputElement = getByRole('heading');
     expect(outputElement.innerHTML).toBe('5');
 });
+
+/////////////////////////////////////////
+/// Tests for Requirements 6-8
+/////////////////////////////////////////
+
+/// 6:
+
+test('support 1 custom delimiter, single character, pound sign', () => {
+    const { getByRole } = render(<Calculator />);
+    const inputElement = getByRole('textbox');
+    fireEvent.change(inputElement, { target: { value: '//#\n2#5' } });
+    fireEvent.click(getByRole('button'));
+    const outputElement = getByRole('heading');
+    expect(outputElement.innerHTML).toBe('7');
+});
+
+test('support 1 custom delimiter, single character, comma', () => {
+    const { getByRole } = render(<Calculator />);
+    const inputElement = getByRole('textbox');
+    fireEvent.change(inputElement, { target: { value: '//,\n2,ff,100' } });
+    fireEvent.click(getByRole('button'));
+    const outputElement = getByRole('heading');
+    expect(outputElement.innerHTML).toBe('102');
+});
+
+/// 7:
+
+// test('support 1 custom delimiter, any length, ***', () => {
+//     const { getByRole } = render(<Calculator />);
+//     const inputElement = getByRole('textbox');
+//     fireEvent.change(inputElement, {
+//         target: { value: '//[***]\n11***22***33' },
+//     });
+//     fireEvent.click(getByRole('button'));
+//     const outputElement = getByRole('heading');
+//     expect(outputElement.innerHTML).toBe('66');
+// });
+
+/// 8:
+
+// test('support multiple delimiters', () => {
+//     const { getByRole } = render(<Calculator />);
+//     const inputElement = getByRole('textbox');
+//     fireEvent.change(inputElement, {
+//         target: { value: '//[*][!!][r9r]\n11r9r22*hh*33!!44' },
+//     });
+//     fireEvent.click(getByRole('button'));
+//     const outputElement = getByRole('heading');
+//     expect(outputElement.innerHTML).toBe('110');
+// });
