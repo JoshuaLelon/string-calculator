@@ -64,7 +64,10 @@ class Calculator extends React.Component {
             // of everything in the matches list: ['r9r', '*', '!!']
             // (might require extra difficulty since * is a special character in regex)
             // then, the test case for requirement 8 will work.
-            // delimiter = /[^[\]]+(?=])/g;
+
+            // below is an idea I have that could work: take all the delimiters found
+            // in matches and make a custom regex out of them.
+            // need to learn more regex and solve the * special character problem though
             delimiter = new RegExp(
                 matches.map(e => '(' + e + ')').join('|') + '+',
                 'g',
