@@ -35,51 +35,56 @@ class Calculator extends React.Component {
         });
     };
 
-    getNumberAsStrings = function(userInputString) {
-        let userInputSplit = null;
-        if (userInputString.startsWith('//')) {
-            const re = /\[(.*?)\]/g;
-            const matches = userInputString.match(re);
-            let beginDelimiterIndex = null;
-            let endDelimiterIndex = null;
-            let delimiter = null;
-            let userInputSliced = null;
-            let beginNumbersIndex = null;
-            if (!matches) {
-                // case 6
-                beginDelimiterIndex = 2;
-                endDelimiterIndex = 3;
-                delimiter = userInputString.slice(
-                    beginDelimiterIndex,
-                    endDelimiterIndex,
-                );
-                beginNumbersIndex = endDelimiterIndex;
-            } else if (matches.length === 1) {
-                // case 7
-                beginDelimiterIndex = 3;
-                endDelimiterIndex = userInputString.indexOf(']'); // assumes delimiter will never be ], yikes!
-                delimiter = userInputString.slice(
-                    beginDelimiterIndex,
-                    endDelimiterIndex,
-                );
-                beginNumbersIndex = endDelimiterIndex + 1;
-            } else {
-                // case 8
-            }
-            userInputSliced = userInputString.slice(
-                beginNumbersIndex,
-                userInputString.length,
-            );
-            userInputSplit = userInputSliced
-                .split(delimiter)
-                .filter(element => element !== undefined);
+    getStringWithoutDelimiters = function(userInputString, matches) {
+        let endDelimiterIndex = null;
+        let beginNumbersIndex = null;
+        if (!matches) {
+            // requirement 6
+            endDelimiterIndex = 3;
+            beginNumbersIndex = endDelimiterIndex;
+        } else if (matches.length === 1) {
+            // requirement 7
+            endDelimiterIndex = userInputString.indexOf(']'); // assumes delimiter will never be ], yikes!
+            beginNumbersIndex = endDelimiterIndex + 1;
         } else {
-            const re = /(\\n)|(,)/g;
-            userInputSplit = userInputString
-                .split(re)
-                .filter(element => element !== undefined);
+            // requirement 8
         }
-        return userInputSplit;
+        return userInputString.slice(beginNumbersIndex, userInputString.length);
+    };
+
+    getProperDelimiter = function(userInputString, matches) {
+        let delimiter = null;
+        if (!matches) {
+            // requirement 6
+            delimiter = userInputString.slice(2, 3); // the single char delimiter is at index 2
+        } else if (matches.length === 1) {
+            // requirement 7
+            delimiter = userInputString.slice(3, userInputString.indexOf(']')); // assumes delimiter will never be ], yikes!
+        } else {
+            // requirement 8
+            // what we want to do here is find a regex that finds all instances
+            // of everything in the matches list: ['r9r', '*', '!!']
+            // then, the test case for requirement 8 will work.
+            delimiter = null;
+        }
+        return delimiter;
+    };
+    getNumberAsStrings = function(userInputString) {
+        let delimiter = /(\\n)|(,)/g;
+        const re = /\[(.*?)\]/g; // this regex finds all delimiters in brackets []
+        const matches = userInputString.match(re);
+        let stringToSplit = userInputString;
+        if (userInputString.startsWith('//')) {
+            // this if block supports custom delimiter formats
+            stringToSplit = this.getStringWithoutDelimiters(
+                userInputString,
+                matches,
+            );
+            delimiter = this.getProperDelimiter(userInputString, matches);
+        }
+        return stringToSplit
+            .split(delimiter)
+            .filter(element => element !== undefined);
     };
 
     onCalculateButtonClick = function() {
