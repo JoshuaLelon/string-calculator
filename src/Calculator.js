@@ -12,8 +12,10 @@ class Calculator extends React.Component {
         const userInput = this.state.inputValue;
         let userInputSplit = null;
         if (userInput.startsWith('//')) {
-            const re = /\[(.*?)\]/g;
+            // const re = /\[(.*?)\]/g;
+            const re = /[^[\]]+(?=])/g;
             const matches = userInput.match(re);
+            debugger;
             let beginDelimiterIndex = null;
             let endDelimiterIndex = null;
             let delimiter = null;
@@ -39,6 +41,13 @@ class Calculator extends React.Component {
                 beginNumbersIndex = endDelimiterIndex + 1;
             } else {
                 // case 8
+                debugger;
+                beginNumbersIndex = userInput.lastIndexOf(']') + 1;
+                // delimiter = /[^[\]]+(?=])/g;
+                delimiter = new RegExp(
+                    matches.map(e => '(' + e + ')').join('|') + '+',
+                    'g',
+                );
             }
             userInputSliced = userInput.slice(
                 beginNumbersIndex,

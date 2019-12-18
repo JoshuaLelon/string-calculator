@@ -175,13 +175,13 @@ test('support 1 custom delimiter, any length, ***', () => {
 
 /// 8:
 
-// test('support multiple delimiters', () => {
-//     const { getByRole } = render(<Calculator />);
-//     const inputElement = getByRole('textbox');
-//     fireEvent.change(inputElement, {
-//         target: { value: '//[*][!!][r9r]\n11r9r22*hh*33!!44' },
-//     });
-//     fireEvent.click(getByRole('button'));
-//     const outputElement = getByRole('heading');
-//     expect(outputElement.innerHTML).toBe('110');
-// });
+test('support multiple delimiters', () => {
+    const { getByRole } = render(<Calculator />);
+    const inputElement = getByRole('textbox');
+    fireEvent.change(inputElement, {
+        target: { value: '//[*][!!][r9r]\n11r9r22*hh*33!!44' },
+    });
+    fireEvent.click(getByRole('button'));
+    const outputElement = getByRole('heading');
+    expect(outputElement.innerHTML).toBe('110');
+});
